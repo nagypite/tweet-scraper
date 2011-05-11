@@ -49,7 +49,7 @@ def userWatchingKeyword(keyword):
 
 def listWatchedKeywords(user=None):
 	watches = UserWatchingKeyword.all()
-	if user:
+	if False and user: ## demo
 		watches.filter("user =", user)
 	watches.order('-date')
 
