@@ -1,0 +1,22 @@
+{% include "_header.html" %}
+	<section>
+		<h2>Watch a keyword!</h2>
+		<form action="/watch" method="post">
+			<input type="text" name="keyword" placeholder="insert a keyword">
+			<input type="submit" value="watch!">
+		</form>
+	</section>
+
+	<section>
+		<h2>You're watching these:</h2>
+		{% if keywords %}
+			<ul>
+			{% for keyword in keywords %}
+				<li><a href="/keyword/{{ keyword.escaped }}">{{ keyword.name }}</a> <a class="unwatch" href="/unwatch/{{ keyword.key }}">[X]</a></li>
+			{% endfor %}
+			</ul>
+		{% else %}
+			<p>No keywords being watched!</p>
+		{% endif %}
+	</section>
+{% include "_footer.html" %}
