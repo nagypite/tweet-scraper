@@ -1,0 +1,12 @@
+{% include "_header.html" %}
+	<section>
+		<h2>Keyword: {{ keyword }}</h2>
+		<p>Currently you're not watching this keyword.</p>
+		<p>Would you like to watch it?
+			<form action="/watch" method="post">
+				<input type="hidden" name="keyword" value="{{ keyword }}">
+				<input type="submit" value="yes, please!">
+			</form>
+		</p>
+	</section>
+{% include "_footer.html" %}

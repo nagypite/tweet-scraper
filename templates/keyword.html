@@ -1,0 +1,11 @@
+{% include "_header.html" %}
+	<section>
+		<h2>Keyword: {{ keyword }}</h2>
+		<p>Stuff about the keyword {{ keyword }}</p>
+		<dl>
+		{% for tweet in tweets %}
+			<dt>{{ tweet.tweeter }}:</dt><dd>{{ tweet.tweetId }}</dd> <dd>at {{ tweet.date }}</dd>
+		{% endfor %}
+		</dl>
+	</section>
+{% include "_footer.html" %}
