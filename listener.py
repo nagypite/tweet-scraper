@@ -21,28 +21,29 @@ class Listener(webapp.RequestHandler):
 
 		text = urllib.unquote(self.request.get('text'))
 
-		found = False
+		found = []
 		for keyword in models.listWatchedKeywords():
 			if text.lower().find(keyword['name']) > -1:
-				found = True
+				found.append(keyword['name'])
 				tweet = models.TweetOnKeyword(
 										tweetId = self.request.get('tweet_id'),
 										tweeter = self.request.get('tweeter'),
 										keyword = keyword['name']
 									)
-				self.response.out.write("FOUND "+keyword['name']+"\n")
 				tweet.put()
 
-		if not found:
-			self.response.out.write("NOTHING FOUND: "+text+"\n")
+		if len(found):
+			self.response.out.write("FOUND: %s\n" % (", ".join(found)))
+		else:
+			self.response.out.write("NOTHING FOUND in: %s\n" % (text))
+	
+	def get(self):
+		self.auth()
+		self.response.out.write(json.dumps([k['name'] for k in models.listWatchedKeywords()]))
 	
 	def auth(self):
 		if not self.request.headers.get('X-Its-Me') == 'I swear':
 			self.redirect("/")
-	
-	def get(self):
-#		self.auth()
-		self.response.out.write(json.dumps([k['name'] for k in models.listWatchedKeywords()]))
 
 def main():
 	logging.getLogger().setLevel(logging.DEBUG)

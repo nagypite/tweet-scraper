@@ -6,8 +6,8 @@ import time
 import threading
 import json
 
-USERNAME = "YourUsernameHere"
-PASSWORD = "YourPasswordHere"
+USERNAME = "YourUsername"
+PASSWORD = "YourPassword"
 APP_DOMAIN  = "tweet-scraper.appspot.com:80"
 #APP_DOMAIN  = "localhost:8080"
 APP_URL  = "/listener"
@@ -21,43 +21,53 @@ class ListenerThread(threading.Thread):
 		global USERNAME, PASSWORD, KEYWORDS
 		global APP_DOMAIN, APP_URL, HTTP_HEADERS
 
-		time.sleep(10)
+		time.sleep(5)
 		while runThread:
 			newKeywords = False
 
 			if len(KEYWORDS) < 1:
-				print "ListenerThread: no keywords. sleeping..."
+				self.log("no keywords. sleeping...")
 				time.sleep(10)
 				continue
 			else:
-				print "ListenerThread: my new keywords are:", KEYWORDS
+				self.log("my new keywords are:", KEYWORDS)
 
-			with tweetstream.TrackStream(USERNAME, PASSWORD, KEYWORDS) as stream:
-				for tweet in stream:
-					if tweet.get('empty', False):
-						print "noop", tweet.get('data')
-					else:
-						to_post = {
-							'tweet_id':	tweet.get('id'),
-							'tweeter':	tweet.get('user', {}).get('screen_name'),
-							'text':		tweet.get('text').encode('utf-8')
-						}
-						to_post = urllib.urlencode(to_post)
+			try:
+				with tweetstream.TrackStream(USERNAME, PASSWORD, KEYWORDS) as stream:
+					for tweet in stream:
+						if tweet.get('empty', False):
+							self.log("noop", tweet.get('data'))
+						else:
+							to_post = {
+								'tweet_id':	tweet.get('id'),
+								'tweeter':	tweet.get('user', {}).get('screen_name'),
+								'text':		tweet.get('text').encode('utf-8')
+							}
+							to_post = urllib.urlencode(to_post)
 
-						conn = httplib.HTTPConnection(APP_DOMAIN);
-						conn.request("POST", APP_URL, to_post, HTTP_HEADERS)
-						response = conn.getresponse()
-						print response.status, response.reason, response.read()
-						conn.close()
+							conn = httplib.HTTPConnection(APP_DOMAIN);
+							conn.request("POST", APP_URL, to_post, HTTP_HEADERS)
+							response = conn.getresponse()
+							self.log(response.status, response.reason, response.read())
+							conn.close()
 
-						if newKeywords:
-							print "ListenerThread: yay! new keywords!"
-							break
+							if newKeywords:
+								self.log("yay! new keywords!")
+								break
 
-						if not runThread:
-							break
+							if not runThread:
+								break
 
-		print "ListenerThread: stopped"
+			except ConnectionError, e:
+				self.log("connection error: %s" % (e.details))
+
+		self.log("stopped")
+
+	def log(self, *args):
+		print "%s:" % (self.getName()),
+		for arg in args:
+			print arg,
+		print ""
 
 def main():
 	global runThread, newKeywords

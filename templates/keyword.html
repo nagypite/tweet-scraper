@@ -2,10 +2,14 @@
 	<section>
 		<h2>Keyword: {{ keyword }}</h2>
 		<p>Stuff about the keyword {{ keyword }}</p>
+	{% if tweets %}
 		<dl>
 		{% for tweet in tweets %}
 			<dt>{{ tweet.tweeter }}:</dt><dd>{{ tweet.tweetId }}</dd> <dd>at {{ tweet.date }}</dd>
 		{% endfor %}
 		</dl>
+	{% else %}
+		<p>Nothing yet.</p>
+	{% endif %}
 	</section>
 {% include "_footer.html" %}

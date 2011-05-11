@@ -24,7 +24,7 @@ def tweetsOnKeyword(keyword):
 	q.filter("keyword =", keyword)
 
 	tweets = []
-	for tweet in q:
+	for tweet in q.fetch(20):
 		tweets.append(tweet)
 	
 	return tweets
@@ -49,11 +49,7 @@ def userWatchingKeyword(keyword):
 
 def listWatchedKeywords(user=None):
 	watches = UserWatchingKeyword.all()
-<<<<<<< HEAD
 	if False and user: ## demo
-=======
-	if user:
->>>>>>> bb062883a08d8fc446064df7a8fab00a29a694b1
 		watches.filter("user =", user)
 	watches.order('-date')
 
