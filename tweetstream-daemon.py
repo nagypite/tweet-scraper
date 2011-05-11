@@ -6,8 +6,8 @@ import time
 import threading
 import json
 
-USERNAME = "nagypite"
-PASSWORD = "qEertzb9"
+USERNAME = "YourUsernameHere"
+PASSWORD = "YourPasswordHere"
 APP_DOMAIN  = "tweet-scraper.appspot.com:80"
 #APP_DOMAIN  = "localhost:8080"
 APP_URL  = "/listener"
